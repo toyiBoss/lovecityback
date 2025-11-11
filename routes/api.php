@@ -12,6 +12,13 @@ use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\DMessageController;
 use App\Http\Controllers\LiveController;
 use App\Http\Controllers\GiftTypeController;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\SettingController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -64,5 +71,22 @@ Route::post('lives/{id}/viewer/inc', [LiveController::class,'incViewer']);
 Route::post('lives/{id}/viewer/dec', [LiveController::class,'decViewer']);
 
 Route::apiResource('gifts', GiftTypeController::class);
+
+    Route::apiResource('subscriptions', SubscriptionController::class)->only(['index','show','store']);
+    Route::post('payments', [PaymentController::class,'store']);
+    Route::get('payments/user/{userId}', [PaymentController::class,'indexByUser']);
+    Route::post('favorites', [FavoriteController::class,'store']);
+    Route::delete('favorites/{targetId}', [FavoriteController::class,'destroy']);
+    Route::get('favorites', [FavoriteController::class,'index']);
+
+    Route::get('notifications', [NotificationController::class,'index']);
+    Route::post('notifications/{id}/read', [NotificationController::class,'markRead']);
+
+    Route::post('invitations', [InvitationController::class,'store']);
+    Route::post('invitations/{code}/accept', [InvitationController::class,'accept']);
+
+    Route::get('countries', [CountryController::class,'index']);
+    Route::get('settings', [SettingController::class,'show']); // current user
+    Route::put('settings', [SettingController::class,'update']);
 
 });
