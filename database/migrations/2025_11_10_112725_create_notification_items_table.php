@@ -11,17 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-Schema::create('notifications', function (Blueprint $table) {
-    $table->uuid('notificationId')->primary();
-    $table->uuid('userId')->index();
-    $table->string('type');
-    $table->text('message')->nullable();
-    $table->string('relatedEntityId')->nullable();
-    $table->timestamp('timestamp')->nullable();
-    $table->boolean('isRead')->default(false);
-    $table->timestamps();
-});
-
+        Schema::create('notifications', function (Blueprint $table) {
+            $table->uuid('notificationId')->primary();
+            $table->uuid('userId')->index();
+            $table->string('type');
+            $table->text('message')->nullable();
+            $table->string('relatedEntityId')->nullable();
+            $table->timestamp('timestamp')->nullable();
+            $table->boolean('isRead')->default(false);
+            $table->timestamps();
+        });
     }
 
     /**

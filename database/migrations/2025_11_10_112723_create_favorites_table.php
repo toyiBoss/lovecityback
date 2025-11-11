@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-Schema::create('favorites', function (Blueprint $table) {
-    $table->uuid('id')->primary();
-    $table->uuid('userId')->index();
-    $table->uuid('targetId')->index();
-    $table->timestamp('timestamp')->nullable();
-    $table->unique(['userId','targetId']);
-    $table->timestamps();
-});
-
+        Schema::create('favorites', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('userId')->index();
+            $table->uuid('targetId')->index();
+            $table->timestamp('timestamp')->nullable();
+            $table->unique(['userId', 'targetId']);
+            $table->timestamps();
+        });
     }
 
     /**

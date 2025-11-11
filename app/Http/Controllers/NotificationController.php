@@ -1,8 +1,7 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\NotificationItem;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -11,37 +10,36 @@ class NotificationController extends Controller
     public function index()
     {
         $userId = auth()->user()->user_id ?? auth()->id();
-        return NotificationItem::where('userId',$userId)->orderBy('timestamp','desc')->get();
+        $notes = Notification::where('userId',$userId)->orderBy('timestamp','desc')->get();
+        return response()->json($notes);
     }
 
-    public function markRead($id)
+    public function markRead($notificationId)
     {
-        $notif = NotificationItem::findOrFail($id);
-        $notif->isRead = true;
-        $notif->save();
-        return response()->json(['message'=>'Marked read']);
+        $userId = auth()->user()->user_id ?? auth()->id();
+        $n = Notification::where('notificationId',$notificationId)->where('userId',$userId)->firstOrFail();
+        $n->isRead = true;
+        $n->save();
+        return response()->json($n);
     }
 
-    // Utilisé par le système interne pour créer
+    // optional: create a notification (internal use)
     public function store(Request $request)
     {
         $request->validate([
-            'userId'=>'required',
-            'type'=>'required',
-            'message'=>'nullable|string',
-            'relatedEntityId'=>'nullable|string',
+            'userId'=>'required|uuid',
+            'type'=>'required|string',
+            'message'=>'required|string'
         ]);
-
-        $notif = NotificationItem::create([
-            'notificationId'=>Str::uuid(),
-            'userId'=>$request->userId,
-            'type'=>$request->type,
-            'message'=>$request->message,
-            'relatedEntityId'=>$request->relatedEntityId,
-            'timestamp'=>now(),
-            'isRead'=>false
+        $n = Notification::create([
+            'notificationId' => (string) Str::uuid(),
+            'userId' => $request->userId,
+            'type' => $request->type,
+            'message' => $request->message,
+            'relatedEntityId' => $request->relatedEntityId ?? null,
+            'timestamp' => now(),
+            'isRead' => false
         ]);
-
-        return response()->json($notif, 201);
+        return response()->json($n,201);
     }
 }
